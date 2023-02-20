@@ -20,7 +20,7 @@ void lex(Unit* unit)
             {
                 Token tok = info.handler(unit);
 
-                if(tok.type != TokenNill)
+                if(tok.type != TokenNil)
                 {
                     token = tok;
                     found_token = true;

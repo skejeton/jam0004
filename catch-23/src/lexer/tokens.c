@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 #define ALPHA "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_"
-#define NUMERICAL "0123456789"
+#define NUMERICAL "01234567"
 
 // handler format:
 // Token token_parse_x(Unit* unit)
@@ -155,7 +155,7 @@ struct token_info token_type_get_info(enum TokenType type)
 {
     struct token_info info;
 
-    info.type = type >= 0 && type < TokenCount ? type : TokenNill;
+    info.type = type >= 0 && type < TokenCount ? type : TokenNil;
     info.sample = token_sample_list[info.type];
     info.handler = token_handler_list[info.type];
     info.mnemonic = token_mnemonic_list[info.type];

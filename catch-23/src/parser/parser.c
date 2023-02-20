@@ -366,7 +366,7 @@ bool parse_toplevel(Parser *p, Ast *dest, enum TokenType sentinel)
 {
     Tail t = create_tail();
 
-    while (peek_token(p).type != TokenNill && peek_token(p).type != sentinel) {
+    while (peek_token(p).type != TokenNil && peek_token(p).type != sentinel) {
         append_tail(&t, p);
         checkout(parser_decide_toplevel(p, t.current));
     }   
@@ -383,7 +383,7 @@ bool parser_parse(Parser *p, DestroyList dl, Ast *dest)
     p->dl = dl;
 
     *dest = (Ast){0};
-    return parse_toplevel(p, dest, TokenNill);
+    return parse_toplevel(p, dest, TokenNil);
 }
 
 void ast_print(Ast *ast, int indent)

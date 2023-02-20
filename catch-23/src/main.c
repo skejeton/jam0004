@@ -15,9 +15,9 @@ int main(int argc, char* argv[])
         fprintf(stderr, "error loading sample file\n");
         exit(-1);
     }
-/*
+
     printf("Input string: %s\n", unit.scan.text);
-*/
+
     lex(&unit);
     printf("Tokens: \n");
 
@@ -28,6 +28,7 @@ int main(int argc, char* argv[])
 
         printf("%s:%zu:%zu %s %s\n", unit.filename, loc.line_num, loc.col_num, info.mnemonic, tok->token.data.str ? tok->token.data.str : "NULL");
     }
+
     Parser p = parser_create(unit.tokens);
     Ast dest;
     if (!parser_parse(&p, dl, &dest)) {

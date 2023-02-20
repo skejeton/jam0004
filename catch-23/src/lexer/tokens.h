@@ -5,7 +5,7 @@
 
 // Keep in order from largest to smallest (place handlers at top)
 #define TOKEN_MACRO(X) \
-    X(TokenNill, NULL, NULL) \
+    X(TokenNil, NULL, NULL) \
     X(TokenIdentifier, "identifier", token_parse_identifier) \
     X(TokenHyphen, "-", NULL) \
     X(TokenNumber, "number", token_parse_number) \
@@ -114,5 +114,5 @@ Token token_parse_identifier(Unit* unit);
 
 static inline Token token_nil()
 {
-    return (Token) { TokenNill };
+    return (Token) { TokenNil };
 }
