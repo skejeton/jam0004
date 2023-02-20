@@ -127,6 +127,14 @@ void token_list_destroy(TokenList* list)
     }
 }
 
+#define TOKEN_MACRO_MNEMONIC_LIST(NAME_, SAMPLE_, HANDLER_) #NAME_,
+
+static const char* token_mnemonic_list[] =
+{
+    TOKEN_MACRO(TOKEN_MACRO_MNEMONIC_LIST)
+    NULL
+};
+
 #define TOKEN_MACRO_SAMPLE_LIST(NAME_, SAMPLE_, HANDLER_) SAMPLE_,
 
 static const char* token_sample_list[] =
@@ -150,6 +158,7 @@ struct token_info token_type_get_info(enum TokenType type)
     info.type = type >= 0 && type < TokenCount ? type : TokenNill;
     info.sample = token_sample_list[info.type];
     info.handler = token_handler_list[info.type];
+    info.mnemonic = token_mnemonic_list[info.type];
 
     return info;
 }

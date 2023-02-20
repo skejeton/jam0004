@@ -95,6 +95,7 @@ void token_list_destroy(TokenList* list);
 struct token_info
 {
     enum TokenType type;
+    const char* mnemonic;
     const char* sample;
     Token(*handler)(Unit* unit);
 };

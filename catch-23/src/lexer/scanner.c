@@ -24,6 +24,11 @@ struct scanner_location scanner_location_of(struct scanner_iterator it)
 
     for(size_t i = 0; i < it._index; i++)
     {
+        if(it._scanner->text[i] == '\r')
+        {
+            continue;
+        }
+
         if(it._scanner->text[i] == '\n')
         {
             loc.line_num++;
@@ -173,12 +178,13 @@ void scanner_destroy_string(struct scanner_string str)
 
 static inline struct scanner_string scanner_split_impl(Scanner* scanner, struct scanner_match prefix, struct scanner_match matcher, bool is_exclusive)
 {
+    struct scanner_iterator start_it = scanner_current(scanner);
     size_t matcher_len = strlen(matcher.match);
     size_t old_index = scanner->_index;
 
     if(!is_exclusive && !scanner_skip(scanner, prefix))
     {
-        return (struct scanner_string) { scanner_current(scanner), NULL, 0 };
+        return (struct scanner_string) { start_it, NULL, 0 };
     }
 
     while(scanner_is_good(scanner))
@@ -206,24 +212,24 @@ static inline struct scanner_string scanner_split_impl(Scanner* scanner, struct 
         // invalid split, give back
         scanner->_index = old_index;
 
-        return (struct scanner_string) { scanner_current(scanner), NULL, scanner->_index - old_index };
+        return (struct scanner_string) { start_it, NULL, scanner->_index - old_index };
     }
 
     if(old_index > scanner->len || scanner->_index > scanner->len)
     {
-        return (struct scanner_string) { scanner_current(scanner), NULL, 0 };
+        return (struct scanner_string) { start_it, NULL, 0 };
     }
 
     size_t len = scanner->_index - old_index;
     char* buff = malloc((len + 1) * sizeof(char));
 
-    if(!buff) return (struct scanner_string) { scanner_current(scanner), NULL, len };
+    if(!buff) return (struct scanner_string) { start_it, NULL, len };
 
     memcpy(buff, &scanner->text[old_index], len);
 
     buff[len] = 0;
 
-    return (struct scanner_string) { scanner_current(scanner), buff, len };
+    return (struct scanner_string) { start_it, buff, len };
 }
 
 struct scanner_string scanner_split(Scanner* scanner, struct scanner_match prefix, struct scanner_match delimiter)
@@ -239,11 +245,12 @@ struct scanner_string scanner_split_exclusively(Scanner* scanner, struct scanner
 struct scanner_string scanner_parse_number(Scanner* scanner, int base)
 {
     static const char digits[] = "0123456789abcdefghijklmnopqrstuvwxyz";
+    struct scanner_iterator start_it = scanner_current(scanner);
     size_t old_index = scanner->_index;
 
     if(base <= 0 || base > (sizeof(digits) / sizeof(digits[0])))
     {
-        return (struct scanner_string) { scanner_current(scanner), NULL, 0 };
+        return (struct scanner_string) { start_it, NULL, 0 };
     }
 
     scanner_skip(scanner, match_chars("-"));
@@ -285,29 +292,30 @@ struct scanner_string scanner_parse_number(Scanner* scanner, int base)
 
     if(old_index > scanner->len || scanner->_index > scanner->len)
     {
-        return (struct scanner_string) { scanner_current(scanner), NULL, 0 };
+        return (struct scanner_string) { start_it, NULL, 0 };
     }
 
     size_t len = scanner->_index - old_index;
     char* buff = malloc((len + 1) * sizeof(char));
 
-    if(!buff) return (struct scanner_string) { scanner_current(scanner), NULL, len };
+    if(!buff) return (struct scanner_string) { start_it, NULL, len };
 
     memcpy(buff, &scanner->text[old_index], len);
 
     buff[len] = 0;
 
-    return (struct scanner_string) { scanner_current(scanner), buff, len };
+    return (struct scanner_string) { start_it, buff, len };
 }
 
 struct scanner_string scanner_parse_string(Scanner* scanner, struct scanner_match quote, struct scanner_match escape)
 {
+    struct scanner_iterator start_it = scanner_current(scanner);
     size_t old_index = scanner->_index;
-    char initial_quote = scanner_current(scanner).ch;
+    char initial_quote = start_it.ch;
 
     if(!scanner_skip(scanner, quote))
     {
-        return (struct scanner_string) { scanner_current(scanner), NULL, 0 };
+        return (struct scanner_string) { start_it, NULL, 0 };
     }
 
     while(scanner_is_good(scanner))
@@ -328,22 +336,22 @@ struct scanner_string scanner_parse_string(Scanner* scanner, struct scanner_matc
         // invalid string, give back
         scanner->_index = old_index;
 
-        return (struct scanner_string) { scanner_current(scanner), NULL, 0 };
+        return (struct scanner_string) { start_it, NULL, 0 };
     }
 
     if(old_index > scanner->len || scanner->_index > scanner->len)
     {
-        return (struct scanner_string) { scanner_current(scanner), NULL, 0 };
+        return (struct scanner_string) { start_it, NULL, 0 };
     }
 
     size_t len = scanner->_index - old_index;
     char* buff = malloc((len + 1) * sizeof(char));
 
-    if(!buff) return (struct scanner_string) { scanner_current(scanner), NULL, len };
+    if(!buff) return (struct scanner_string) { start_it, NULL, len };
 
     memcpy(buff, &scanner->text[old_index], len);
 
     buff[len] = 0;
 
-    return (struct scanner_string) { scanner_current(scanner), buff, len };
+    return (struct scanner_string) { start_it, buff, len };
 }
