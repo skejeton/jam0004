@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-void lex(Unit* unit)
+void lexer_lex(Unit* unit)
 {
     TokenList** entry = &unit->tokens;
 

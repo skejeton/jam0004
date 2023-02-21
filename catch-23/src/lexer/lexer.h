@@ -3,6 +3,4 @@
 #include "lexer/tokens.h"
 #include "unit.h"
 
-void lex(Unit* unit);
-
-
+void lexer_lex(Unit* unit);

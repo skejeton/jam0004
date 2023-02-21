@@ -28,7 +28,7 @@ EXECUTABLE := $(BIN_DIRECTORY)/catch23
 all: $(EXECUTABLE)
 
 run: all
-	@$(EXECUTABLE)
+	@$(EXECUTABLE) -v test/sample.catch23
 
 $(EXECUTABLE): $(OBJECTS)
 	@$(CREATE_DIRS)
